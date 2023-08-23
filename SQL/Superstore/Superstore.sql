@@ -178,16 +178,24 @@ WHERE order_date BETWEEN '2012-09-01' AND '2012-09-30'
 ORDER BY order_date;
 
 -- Mark of the day by the amount of profit
-CREATE VIEW day_marks AS
+SELECT order_date, profit, CASE
+		WHEN profit > 1000 THEN 'Excellent day'
+		WHEN profit > 100 THEN 'Good day'
+		WHEN profit > 0 THEN 'Typical day'
+		ELSE 'Bad day' 
+		END as day_on_profit
+FROM superstore_sales;
+	
+-- Number of days by profit marks
+WITH day_marks AS
 	(SELECT order_date, profit, CASE
 		WHEN profit > 1000 THEN 'Excellent day'
 		WHEN profit > 100 THEN 'Good day'
 		WHEN profit > 0 THEN 'Typical day'
 		ELSE 'Bad day' 
 		END as day_on_profit
-	FROM superstore_sales);
-	 
--- Number of days by profit marks
+	FROM superstore_sales)
+
 SELECT day_on_profit, count(*) as count
 FROM day_marks
 GROUP BY day_on_profit 
